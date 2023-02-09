@@ -15,6 +15,7 @@ namespace KF_2_2023.Managers
     {
         private static readonly object threadlock = new object();
 
+        private KeysModel _keys;
         private SettingsModel _settings;
         private IConnectionMultiplexer _redis;
 
@@ -25,12 +26,13 @@ namespace KF_2_2023.Managers
 
         public bool isrunning { get; set; }
 
-        public SampleStreamManager(IConnectionMultiplexer redis, SettingsModel settings)
+        public SampleStreamManager(IConnectionMultiplexer redis, KeysModel keys, SettingsModel settings)
         {
+            _keys = keys;
             _settings = settings;
             _redis = redis;
 
-            appClient = new TwitterClient(settings.TwitterAPIKey, settings.TwitterAPIKeySecret, settings.TwitterBearerToken);
+            appClient = new TwitterClient(_keys.TwitterAPIKey, _keys.TwitterAPIKeySecret, _keys.TwitterBearerToken);
             tweets = new List<TweetModel>();
             dyHashtags = new Dictionary<string, int>();
         }

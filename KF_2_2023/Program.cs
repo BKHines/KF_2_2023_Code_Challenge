@@ -12,6 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Configuration.AddJsonFile("keys.json");
+
 var _cors = builder.Configuration.GetSection("KF22023CORS").Get<string[]>();
 
 if (_cors != null && _cors.Length > 0)
@@ -26,13 +28,16 @@ builder.Services.AddOptions();
 var _settings = builder.Configuration.GetSection("settings").Get<SettingsModel>();
 builder.Services.Configure<SettingsModel>(builder.Configuration.GetSection("settings"));
 
+var _keys = builder.Configuration.GetSection("keys").Get<KeysModel>();
+builder.Services.Configure<KeysModel>(builder.Configuration.GetSection("keys"));
+
 var multiplexer = ConnectionMultiplexer.Connect(new ConfigurationOptions
 {
     EndPoints = { _settings is null ? string.Empty : _settings.RedisEndpoint },
     AbortOnConnectFail = false
 });
 builder.Services.AddSingleton<IConnectionMultiplexer>(multiplexer);
-builder.Services.AddSingleton(new SampleStreamManager(multiplexer, _settings));
+builder.Services.AddSingleton(new SampleStreamManager(multiplexer, _keys, _settings));
 builder.Services.AddHttpContextAccessor();
 
 if (_settings != null && _settings.MinThreadPools > 0)
