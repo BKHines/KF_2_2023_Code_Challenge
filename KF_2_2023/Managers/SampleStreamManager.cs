@@ -57,14 +57,35 @@ namespace KF_2_2023.Managers
             }
         }
 
-        public int GetConsumptionCount()
+        private int GetConsumptionCount()
         {
             return tweets.Count;
         }
 
-        public IEnumerable<string> GetTopHashtags(int count)
+        private IEnumerable<string> GetTopHashtags(int count)
         {
             return dyHashtags != null ? dyHashtags.OrderByDescending(a => a.Value).Take(count).Select(a => a.Key) : new List<String>();
+        }
+
+        private int GetSensitiveCount()
+        {
+            return tweets.Count(a => a.possiblySensitive);
+        }
+
+        //private IEnumerable<string> GetUniqueSources()
+        //{
+        //    return tweets.Any(a => !string.IsNullOrWhiteSpace(a.source)) ? tweets.Select(a => a.source).Distinct() : new List<string>();
+        //}
+
+        public ConsumptionDataModel GetConsumptionData(int hashtagcount)
+        {
+            return new ConsumptionDataModel()
+            {
+                TweetsConsumed = GetConsumptionCount(),
+                TweetsPossiblySensitive = GetSensitiveCount(),
+                TopHashtags = GetTopHashtags(hashtagcount)//,
+                //UniqueSources = GetUniqueSources()
+            };
         }
 
         private void SampleTweetReceived(TweetV2 tweet)

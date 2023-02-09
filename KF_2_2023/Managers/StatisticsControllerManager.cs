@@ -21,9 +21,7 @@ namespace KF_2_2023.Managers
 
         public ConsumptionDataModel GetConsumptionData(int hashtagCount)
         {
-            var cdm = new ConsumptionDataModel();
-            cdm.TopHashtags = _streamMgr.GetTopHashtags(hashtagCount);
-            cdm.TweetsConsumed = _streamMgr.GetConsumptionCount();
+            var cdm = _streamMgr.GetConsumptionData(hashtagCount);
 
             return cdm;
         }
